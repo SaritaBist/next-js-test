@@ -13,9 +13,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
+import { Lock, User } from "lucide-react";
 import { useSignIn } from "@/hooks/use-auth";
+import Link from "next/link";
 
 const signInSchema = z.object({
   username: z.string().min(1, "Please enter your username"),
@@ -44,79 +44,102 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-6 border border-blue-100 rounded-lg shadow-lg bg-white">
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Sign In</h1>
-        <p className="text-gray-600 mt-2">Welcome back! Please sign in to your account.</p>
-      </div>
+    <div className="max-w-xl mx-auto mt-8 p-8 relative">
+      {/* Animated background card */}
+      <div className="absolute inset-0 bg-linear-to-br from-blue-50 via-white to-purple-50 rounded-2xl shadow-2xl transform transition-all duration-300 hover:shadow-3xl" />
+      
+      <div className="relative">
+        {/* Logo/Icon */}
+        <div className="flex justify-center mb-6">
+          <div className="w-16 h-16 bg-linear-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-105">
+            <Lock className="w-8 h-8 text-white" />
+          </div>
+        </div>
 
-      {/* Show error message if sign in fails */}
-      {signInMutation.isError && (
-        <Alert variant="destructive" className="mb-6">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            {signInMutation.error?.message || "Sign in failed. Please try again."}
-          </AlertDescription>
-        </Alert>
-      )}
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+            Welcome Back
+          </h1>
+          <p className="text-gray-600">Sign in to continue to your account</p>
+        </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    placeholder="Enter your username"
-                    {...field}
-                    disabled={signInMutation.isPending}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        {/* Form */}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-gray-700 font-medium">Username</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <Input
+                        type="text"
+                        placeholder="Enter your username"
+                        className="pl-10 h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-all"
+                        {...field}
+                        disabled={signInMutation.isPending}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Enter your password"
-                    {...field}
-                    disabled={signInMutation.isPending}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-gray-700 font-medium">Password</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <Input
+                        type="password"
+                        placeholder="Enter your password"
+                        className="pl-10 h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-all"
+                        {...field}
+                        disabled={signInMutation.isPending}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Button 
-            type="submit" 
-            className="w-full" 
-            disabled={signInMutation.isPending}
-          >
-            {signInMutation.isPending ? "Signing In..." : "Sign In"}
-          </Button>
-        </form>
-      </Form>
+            <Button 
+              type="submit" 
+              className="w-full h-12 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" 
+              disabled={signInMutation.isPending}
+            >
+              {signInMutation.isPending ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Signing In...
+                </span>
+              ) : "Sign In"}
+            </Button>
+          </form>
+        </Form>
 
-      <div className="mt-6 text-center">
-        <p className="text-sm text-gray-600">
-          Don't have an account?{" "}
-          <a href="/sign-up" className="text-blue-600 hover:underline">
-            Sign up
-          </a>
-        </p>
+        {/* Footer */}
+        <div className="mt-8 text-center">
+          <p className="text-sm text-gray-600">
+            Don't have an account?{" "}
+            <Link href="/sign-up" className="font-semibold text-blue-600 hover:text-purple-600 transition-colors">
+              Create account
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
