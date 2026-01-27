@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { DataTable, Column, RowAction, SortDirection } from "@/components/data-table";
+import { DataTable, Column, RowAction, SortDirection } from "@/components/common/data-table";
 import { useInvoices, type Invoice } from "@/hooks/use-invoices";
 
 const InvoiceList: React.FC = () => {

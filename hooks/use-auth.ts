@@ -1,14 +1,21 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { authApi, clearTokens, type SignUpData, type SignInData, type AuthResponse, type ApiError } from "@/lib/api";
+import {
+  authApi,
+  clearTokens,
+  type SignUpData,
+  type SignInData,
+  type AuthResponse,
+  type ApiError,
+} from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 // React Query keys
 export const authKeys = {
-  all: ['auth'] as const,
-  profile: () => [...authKeys.all, 'profile'] as const,
+  all: ["auth"] as const,
+  profile: () => [...authKeys.all, "profile"] as const,
 };
 
 // Sign Up Mutation
@@ -18,7 +25,9 @@ export const useSignUp = () => {
   return useMutation<AuthResponse, ApiError, SignUpData>({
     mutationFn: authApi.signUp,
     onSuccess: (data) => {
-      toast.success(data.message || "Account created successfully! Please sign in.");
+      toast.success(
+        data.message || "Account created successfully! Please sign in.",
+      );
       // Redirect to sign-in after successful registration
       router.push("/sign-in");
     },
@@ -40,12 +49,13 @@ export const useSignIn = () => {
       toast.success(data.message || "Signed in successfully!");
       // Invalidate and refetch user data
       queryClient.invalidateQueries({ queryKey: authKeys.profile() });
-      // Redirect to dashboard
       router.push("/dashboard");
     },
     onError: (error) => {
       console.error("Sign in error:", error);
-      toast.error(error.message || "Sign in failed. Please check your credentials.");
+      toast.error(
+        error.message || "Sign in failed. Please check your credentials.",
+      );
     },
   });
 };
@@ -55,7 +65,8 @@ export const useProfile = () => {
   return useQuery<AuthResponse, ApiError>({
     queryKey: authKeys.profile(),
     queryFn: authApi.getProfile,
-    enabled: typeof window !== "undefined" && !!localStorage.getItem("authToken"),
+    enabled:
+      typeof window !== "undefined" && !!localStorage.getItem("authToken"),
     retry: false,
   });
 };

@@ -1,5 +1,5 @@
-import DashboardComponent from '@/components/dashboard';
-import ProtectedRoute from '@/components/protected-route';
+import DashboardComponent from '@/components/dashboard/dashboard';
+import ProtectedRoute from '@/components/common/protected-route';
 
 const Dashboard = () => {
     return (

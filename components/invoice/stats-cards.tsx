@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useInvoices } from "@/hooks/use-invoices";
-import StatCard from "@/components/stat-card";
+import StatCard from "@/components/invoice/stat-card";
 
 const StatsCards: React.FC = () => {
   const { data: invoicesData } = useInvoices();

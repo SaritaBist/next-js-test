@@ -10,8 +10,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { ChevronUp, ChevronDown, ChevronsUpDown, ChevronLeft, ChevronRight, Eye, Edit, Trash2 } from "lucide-react"
+import { ChevronUp, ChevronDown, ChevronsUpDown, Eye, Edit, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Pagination } from "@/components/common/pagination"
 
 // ─────────────────────────────────────────────────────────────
 // Enhanced Types
@@ -95,6 +96,21 @@ export function DataTable<T>({
   description,
   emptyState,
 }: DataTableProps<T>) {
+  // Internal pagination state when pagination prop is not provided
+  const [internalPage, setInternalPage] = React.useState(1);
+  const [internalPageSize] = React.useState(10);
+
+  // Use provided pagination or internal state
+  const currentPage = pagination?.page ?? internalPage;
+  const currentPageSize = pagination?.pageSize ?? internalPageSize;
+  const handlePageChange = pagination?.onPageChange ?? setInternalPage;
+
+  // Auto-paginate data if no pagination config provided
+  const shouldAutoPaginate = !pagination;
+  const paginatedData = shouldAutoPaginate 
+    ? data.slice((currentPage - 1) * currentPageSize, currentPage * currentPageSize)
+    : data;
+
   const handleSort = (key: string) => {
     if (!onSort) return
     let newDirection: SortDirection = "asc"
@@ -106,45 +122,41 @@ export function DataTable<T>({
   }
 
   const getSortIcon = (key: string) => {
-    if (sortKey !== key) return <ChevronsUpDown className="ml-2 h-4 w-4 text-gray-400 transition-colors" />
-    if (sortDirection === "asc") return <ChevronUp className="ml-2 h-4 w-4 text-blue-600" />
-    if (sortDirection === "desc") return <ChevronDown className="ml-2 h-4 w-4 text-blue-600" />
-    return <ChevronsUpDown className="ml-2 h-4 w-4 text-gray-400" />
+    if (sortKey !== key) return <ChevronsUpDown className="ml-2 h-4 w-4 text-gray-300 transition-colors" />
+    if (sortDirection === "asc") return <ChevronUp className="ml-2 h-4 w-4 text-blue-300" />
+    if (sortDirection === "desc") return <ChevronDown className="ml-2 h-4 w-4 text-blue-300" />
+    return <ChevronsUpDown className="ml-2 h-4 w-4 text-gray-300" />
   }
 
-  const totalPages = pagination && totalCount
-    ? Math.ceil(totalCount / pagination.pageSize)
-    : 1
+  const totalPages = Math.ceil((totalCount ?? data.length) / currentPageSize);
 
-  const startRecord = pagination ? (pagination.page - 1) * pagination.pageSize + 1 : 1
-  const endRecord = pagination
-    ? Math.min(pagination.page * pagination.pageSize, totalCount ?? data.length)
-    : data.length
+  const startRecord = (currentPage - 1) * currentPageSize + 1;
+  const endRecord = Math.min(currentPage * currentPageSize, totalCount ?? data.length);
 
   return (
     <div className="w-full">
       {/* Header Section */}
       {(title || description) && (
-        <div className="flex flex-col space-y-2 mb-4">
+        <div className="flex flex-col space-y-2 mb-6">
           {title && (
-            <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
+            <h2 className="text-2xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{title}</h2>
           )}
           {description && (
-            <p className="text-gray-600">{description}</p>
+            <p className="text-gray-600 text-sm">{description}</p>
           )}
         </div>
       )}
 
       {/* Table Container */}
-      <div className="bg-white rounded-t-xl shadow-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-t-2xl shadow-xl border border-gray-200 overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-blue-50 hover:bg-blue-50 !border-none">
+            <TableRow className="bg-linear-to-r from-slate-700 to-slate-800 hover:from-slate-700 hover:to-slate-800 border-none!">
               {columns.map((col) => (
                 <TableHead
                   key={String(col.key)}
                   className={cn(
-                    "text-start h-12 text-blue-600 active:!bg-blue-100",
+                    "text-start h-14 text-white",
                     col.width ?? "",
                     col.align === "center" && "text-center",
                     col.align === "right" && "text-right"
@@ -152,20 +164,20 @@ export function DataTable<T>({
                 >
                   {col.sortable ? (
                     <button
-                      className="flex items-center hover:text-blue-600 transition-colors font-semibold text-blue-600"
+                      className="flex items-center hover:text-blue-300 transition-colors font-semibold text-white"
                       onClick={() => handleSort(String(col.key))}
                     >
                       {col.header}
                       {getSortIcon(String(col.key))}
                     </button>
                   ) : (
-                    <span className="font-semibold text-blue-600">{col.header}</span>
+                    <span className="font-semibold text-white">{col.header}</span>
                   )}
                 </TableHead>
               ))}
               {rowActions && rowActions.length > 0 && (
-                <TableHead className="w-32 text-center text-blue-600 bg-blue-50">
-                  <span className="font-semibold text-blue-600">Actions</span>
+                <TableHead className="w-32 text-center text-white bg-slate-700">
+                  <span className="font-semibold text-white">Actions</span>
                 </TableHead>
               )}
             </TableRow>
@@ -208,16 +220,16 @@ export function DataTable<T>({
                 </TableCell>
               </TableRow>
             ) : (
-              data.map((row, rowIndex) => (
+              paginatedData.map((row, rowIndex) => (
                 <TableRow
                   key={rowIndex}
-                  className="group transition-colors hover:bg-gray-100 border-b border-gray-200"
+                  className="group transition-all duration-200 hover:bg-blue-50/50 border-b border-gray-100 last:border-0"
                 >
                   {columns.map((col) => (
                     <TableCell
                       key={String(col.key)}
                       className={cn(
-                        "text-[13px] border-t border-gray-200 transition-colors duration-150",
+                        "text-sm py-4 text-gray-700 font-medium transition-colors duration-150",
                         col.align === "center" && "text-center",
                         col.align === "right" && "text-right"
                       )}
@@ -228,8 +240,8 @@ export function DataTable<T>({
                     </TableCell>
                   ))}
                   {rowActions && rowActions.length > 0 && (
-                    <TableCell className="text-center border border-gray-200 px-3">
-                      <div className="flex items-center justify-center gap-1">
+                    <TableCell className="text-center px-3 py-4">
+                      <div className="flex items-center justify-center gap-2">
                         {rowActions.map((action, i) => (
                           <Button
                             key={i}
@@ -238,8 +250,9 @@ export function DataTable<T>({
                             onClick={() => action.onClick(row)}
                             disabled={action.disabled}
                             className={cn(
-                              "h-8 w-8 p-0 transition-all duration-200 hover:scale-105",
-                              action.variant === "destructive" && "hover:bg-red-100 hover:text-red-700"
+                              "h-9 w-9 p-0 transition-all duration-200 hover:scale-110 rounded-lg shadow-sm",
+                              action.variant === "destructive" && "hover:bg-red-50 hover:text-red-600 hover:border-red-200",
+                              action.variant === "ghost" && "hover:bg-blue-50 hover:text-blue-600"
                             )}
                           >
                             {action.icon || (
@@ -261,105 +274,17 @@ export function DataTable<T>({
         </Table>
       </div>
 
-      {/* Enhanced Pagination - Always show */}
-      <div className="flex items-center justify-between bg-white rounded-b-lg border-x border-b border-gray-200 px-4 py-3">
-        <div className="text-sm text-blue-600">
-          Showing results {data.length === 0 ? 0 : startRecord}-{endRecord} of {totalCount ?? data.length}
-        </div>
-
-        <div className="flex items-center gap-4">
-          {/* Rows per page selector */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Rows</span>
-            <select
-              className="h-8 w-16 rounded-md border border-gray-300 bg-white px-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={pagination?.pageSize ?? 10}
-              onChange={(e) => {
-                // This would need to be handled by parent if needed
-              }}
-            >
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-            </select>
-          </div>
-
-          {/* Pagination controls */}
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => pagination?.onPageChange((pagination?.page ?? 1) - 1)}
-              disabled={!pagination || pagination.page <= 1}
-              className="h-8 w-8 p-0 text-gray-500 hover:bg-gray-100"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-
-            {/* Page numbers */}
-            {(() => {
-              const currentPage = pagination?.page ?? 1
-              const total = totalPages
-              const pages: (number | string)[] = []
-
-              if (total <= 5) {
-                for (let i = 1; i <= total; i++) pages.push(i)
-              } else {
-                // Always show first 3 pages
-                pages.push(1, 2, 3)
-                
-                if (currentPage > 4) {
-                  pages.push('...')
-                }
-                
-                // Show current page area if not in first 3
-                if (currentPage > 3 && currentPage < total - 2) {
-                  if (!pages.includes(currentPage)) pages.push(currentPage)
-                }
-                
-                if (currentPage < total - 3) {
-                  pages.push('...')
-                }
-                
-                // Always show last page
-                if (!pages.includes(total)) pages.push(total)
-              }
-
-              return pages.map((page, idx) => (
-                page === '...' ? (
-                  <span key={`ellipsis-${idx}`} className="px-2 text-gray-400">...</span>
-                ) : (
-                  <Button
-                    key={page}
-                    variant={currentPage === page ? "default" : "ghost"}
-                    size="sm"
-                    className={cn(
-                      "h-8 w-8 p-0 text-sm font-medium",
-                      currentPage === page
-                        ? "bg-blue-600 hover:bg-blue-700 text-white"
-                        : "text-gray-600 hover:bg-gray-100"
-                    )}
-                    onClick={() => pagination?.onPageChange(page as number)}
-                  >
-                    {String(page).padStart(2, '0')}
-                  </Button>
-                )
-              ))
-            })()}
-
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => pagination?.onPageChange((pagination?.page ?? 1) + 1)}
-              disabled={!pagination || (pagination?.page ?? 1) >= totalPages}
-              className="h-8 w-8 p-0 text-gray-500 hover:bg-gray-100"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </div>
+      {/* Pagination Component */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalCount={totalCount ?? data.length}
+        pageSize={currentPageSize}
+        startRecord={startRecord}
+        endRecord={endRecord}
+        onPageChange={handlePageChange}
+        onPageSizeChange={undefined}
+      />
     </div>
   )
 }
