@@ -64,7 +64,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response interceptor with refresh token logic
@@ -88,10 +88,22 @@ const processQueue = (error: Error | null, token: string | null = null) => {
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+    };
 
-    // If 401 and we haven't retried yet
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // Skip token refresh for auth endpoints (login/signup/refresh)
+    const isAuthEndpoint =
+      originalRequest.url?.includes("/login") ||
+      originalRequest.url?.includes("/signup") ||
+      originalRequest.url?.includes("/refresh");
+
+    // If 401 and we haven't retried yet and it's not an auth endpoint
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !isAuthEndpoint
+    ) {
       if (isRefreshing) {
         // Queue the request while refreshing
         return new Promise((resolve, reject) => {
@@ -118,10 +130,9 @@ api.interceptors.response.use(
       }
 
       try {
-        const response = await axios.post(
-          `${api.defaults.baseURL}/refresh`,
-          { refreshToken }
-        );
+        const response = await axios.post(`${api.defaults.baseURL}/refresh`, {
+          refreshToken,
+        });
 
         const newAccessToken = response.data.accessToken;
         setAccessToken(newAccessToken);
@@ -142,7 +153,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 // Types for API requests/responses
@@ -206,43 +217,65 @@ export interface CreateInvoiceData {
   items: InvoiceItem[];
 }
 
+// Helper function to transform axios errors
+const handleApiError = (error: unknown): never => {
+  if (axios.isAxiosError(error)) {
+    const message = error.response?.data?.message || error.message || "An error occurred";
+    const apiError: ApiError = {
+      message,
+      status: error.response?.status,
+      errors: error.response?.data?.errors,
+    };
+    throw apiError;
+  }
+  throw { message: "An unexpected error occurred" } as ApiError;
+};
+
 // Auth API functions
 export const authApi = {
   // Sign up user
   signUp: async (data: SignUpData): Promise<AuthResponse> => {
-    const response = await api.post("/register", {
-      username: data.username,
-      password: data.password,
-    });
+    try {
+      const response = await api.post("/register", {
+        username: data.username,
+        password: data.password,
+      });
 
-    return {
-      success: true,
-      message: response.data.message,
-      user: response.data.user,
-    };
+      return {
+        success: true,
+        message: response.data.message,
+        user: response.data.user,
+      };
+    } catch (error) {
+      return handleApiError(error);
+    }
   },
 
   // Sign in user
   signIn: async (data: SignInData): Promise<AuthResponse> => {
-    const response = await api.post("/login", {
-      username: data.username,
-      password: data.password,
-    });
+    try {
+      const response = await api.post("/login", {
+        username: data.username,
+        password: data.password,
+      });
 
-    // Store tokens
-    if (response.data.accessToken) {
-      setAccessToken(response.data.accessToken);
-    }
-    if (response.data.refreshToken) {
-      setRefreshToken(response.data.refreshToken);
-    }
+      // Store tokens
+      if (response.data.accessToken) {
+        setAccessToken(response.data.accessToken);
+      }
+      if (response.data.refreshToken) {
+        setRefreshToken(response.data.refreshToken);
+      }
 
-    return {
-      success: true,
-      message: response.data.message,
-      accessToken: response.data.accessToken,
-      refreshToken: response.data.refreshToken,
-    };
+      return {
+        success: true,
+        message: response.data.message,
+        accessToken: response.data.accessToken,
+        refreshToken: response.data.refreshToken,
+      };
+    } catch (error) {
+      return handleApiError(error);
+    }
   },
 
   // Get current user profile from stored token
@@ -286,7 +319,9 @@ export const invoiceApi = {
   },
 
   // Create new invoice
-  create: async (data: CreateInvoiceData): Promise<{ message: string; invoice: Invoice }> => {
+  create: async (
+    data: CreateInvoiceData,
+  ): Promise<{ message: string; invoice: Invoice }> => {
     const response = await api.post("/invoices", data);
     return response.data;
   },
