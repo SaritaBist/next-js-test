@@ -3,10 +3,13 @@
 import React, { useState } from "react";
 import { DataTable, Column, RowAction, SortDirection } from "@/components/common/data-table";
 import { useInvoices, type Invoice } from "@/hooks/use-invoices";
+import { InvoiceDetailsDialog } from "./invoice-details-dialog";
 
 const InvoiceList: React.FC = () => {
   const [sortKey, setSortKey] = useState<string>("");
   const [sortDirection, setSortDirection] = useState<SortDirection>(null);
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const [showDetailsDialog, setShowDetailsDialog] = useState(false);
 
   const { data: invoicesData, isLoading: invoicesLoading } = useInvoices();
 
@@ -68,7 +71,10 @@ const InvoiceList: React.FC = () => {
   const rowActions: RowAction<Invoice>[] = [
     {
       label: "View",
-      onClick: (row) => alert(`Invoice: ${row.invoiceNumber}\nCustomer: ${row.customer}\nAmount: $${row.amount}\nDescription: ${row.description}`),
+      onClick: (row) => {
+        setSelectedInvoice(row);
+        setShowDetailsDialog(true);
+      },
       variant: "ghost",
     },
   ];
@@ -82,19 +88,26 @@ const InvoiceList: React.FC = () => {
   const totalInvoices = invoices.length;
 
   return (
-    <DataTable<Invoice>
-      data={invoices}
-      columns={columns}
-      totalCount={totalInvoices}
-      rowActions={rowActions}
-      sortKey={sortKey}
-      sortDirection={sortDirection}
-      onSort={handleSort}
-      isLoading={invoicesLoading}
-      title="All Invoices"
-      description="Manage and track all your invoices in one place."
-      emptyMessage="No invoices found. Create your first invoice to get started."
-    />
+    <>
+      <DataTable<Invoice>
+        data={invoices}
+        columns={columns}
+        totalCount={totalInvoices}
+        rowActions={rowActions}
+        sortKey={sortKey}
+        sortDirection={sortDirection}
+        onSort={handleSort}
+        isLoading={invoicesLoading}
+        title="All Invoices"
+        description="Manage and track all your invoices in one place."
+        emptyMessage="No invoices found. Create your first invoice to get started."
+      />
+      <InvoiceDetailsDialog
+        invoice={selectedInvoice}
+        isOpen={showDetailsDialog}
+        onClose={() => setShowDetailsDialog(false)}
+      />
+    </>
   );
 };
 

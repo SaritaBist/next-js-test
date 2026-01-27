@@ -103,7 +103,7 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
       {/* Customer & Dates */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="customer">Customer *</Label>
+          <Label htmlFor="customer">Customer <span className="text-red-500">*</span></Label>
           <Input
             id="customer"
             placeholder="Customer name"
@@ -116,7 +116,7 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="date">Invoice Date *</Label>
+          <Label htmlFor="date">Invoice Date <span className="text-red-500">*</span></Label>
           <Input
             id="date"
             type="date"
@@ -129,7 +129,7 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="dueDate">Due Date *</Label>
+          <Label htmlFor="dueDate">Due Date <span className="text-red-500">*</span></Label>
           <Input
             id="dueDate"
             type="date"
@@ -155,7 +155,7 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
       {/* Items */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label>Items *</Label>
+          <Label>Items <span className="text-red-500">*</span></Label>
           <Button
             type="button"
             variant="outline"
