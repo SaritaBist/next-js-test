@@ -88,8 +88,8 @@ export function DataTable<T>({
   pagination,
   rowActions,
   onSort,
-  sortKey,
-  sortDirection,
+  sortKey: externalSortKey,
+  sortDirection: externalSortDirection,
   isLoading = false,
   emptyMessage = "No data available.",
   title,
@@ -100,25 +100,64 @@ export function DataTable<T>({
   const [internalPage, setInternalPage] = React.useState(1);
   const [internalPageSize] = React.useState(10);
 
+  // Internal sorting state
+  const [internalSortKey, setInternalSortKey] = React.useState<string>("");
+  const [internalSortDirection, setInternalSortDirection] = React.useState<SortDirection>(null);
+
+  // Use external or internal sort state
+  const sortKey = externalSortKey ?? internalSortKey;
+  const sortDirection = externalSortDirection ?? internalSortDirection;
+
   // Use provided pagination or internal state
   const currentPage = pagination?.page ?? internalPage;
   const currentPageSize = pagination?.pageSize ?? internalPageSize;
   const handlePageChange = pagination?.onPageChange ?? setInternalPage;
 
+  // Sort data internally
+  const sortedData = React.useMemo(() => {
+    if (!sortKey || !sortDirection) return data;
+
+    return [...data].sort((a, b) => {
+      const aValue = (a as Record<string, unknown>)[sortKey];
+      const bValue = (b as Record<string, unknown>)[sortKey];
+
+      if (aValue === null || aValue === undefined) return 1;
+      if (bValue === null || bValue === undefined) return -1;
+
+      let comparison = 0;
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        comparison = aValue.localeCompare(bValue);
+      } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+        comparison = aValue - bValue;
+      } else {
+        comparison = String(aValue).localeCompare(String(bValue));
+      }
+
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }, [data, sortKey, sortDirection]);
+
   // Auto-paginate data if no pagination config provided
   const shouldAutoPaginate = !pagination;
   const paginatedData = shouldAutoPaginate 
-    ? data.slice((currentPage - 1) * currentPageSize, currentPage * currentPageSize)
-    : data;
+    ? sortedData.slice((currentPage - 1) * currentPageSize, currentPage * currentPageSize)
+    : sortedData;
 
   const handleSort = (key: string) => {
-    if (!onSort) return
     let newDirection: SortDirection = "asc"
     if (sortKey === key) {
       if (sortDirection === "asc") newDirection = "desc"
       else if (sortDirection === "desc") newDirection = null
     }
-    onSort(key, newDirection)
+    
+    // Update internal state
+    setInternalSortKey(key);
+    setInternalSortDirection(newDirection);
+    
+    // Call external handler if provided
+    if (onSort) {
+      onSort(key, newDirection);
+    }
   }
 
   const getSortIcon = (key: string) => {

@@ -1,13 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { DataTable, Column, RowAction, SortDirection } from "@/components/common/data-table";
+import { DataTable, Column, RowAction } from "@/components/common/data-table";
 import { useInvoices, type Invoice } from "@/hooks/use-invoices";
 import { InvoiceDetailsDialog } from "./invoice-details-dialog";
 
 const InvoiceList: React.FC = () => {
-  const [sortKey, setSortKey] = useState<string>("");
-  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
 
@@ -79,11 +77,6 @@ const InvoiceList: React.FC = () => {
     },
   ];
 
-  const handleSort = (key: string, direction: SortDirection) => {
-    setSortKey(key);
-    setSortDirection(direction);
-  };
-
   // Stats calculations
   const totalInvoices = invoices.length;
 
@@ -94,9 +87,6 @@ const InvoiceList: React.FC = () => {
         columns={columns}
         totalCount={totalInvoices}
         rowActions={rowActions}
-        sortKey={sortKey}
-        sortDirection={sortDirection}
-        onSort={handleSort}
         isLoading={invoicesLoading}
         title="All Invoices"
         description="Manage and track all your invoices in one place."
