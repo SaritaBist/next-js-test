@@ -373,29 +373,7 @@ export function Component() {
 - Handle loading and error states
 - Provide toast feedback for user actions
 
-## 🐛 Troubleshooting
 
-
-**Port Already in Use**
-```bash
-# Kill process on port 3000
-npx kill-port 3000
-```
-
-**Environment Variables Not Loading**
-- Ensure `.env.local` exists
-- Restart development server after changes
-- Variables must start with `NEXT_PUBLIC_` for client access
-
-**API Connection Failed**
-- Verify backend server is running
-- Check `NEXT_PUBLIC_API_URL` in `.env.local`
-- Ensure correct port (default: 4000)
-
-**Authentication Issues**
-- Clear localStorage and cookies
-- Check token expiration times
-- Verify refresh token endpoint is working
 
 
 

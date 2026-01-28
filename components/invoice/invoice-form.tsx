@@ -15,7 +15,7 @@ import { toast } from "sonner";
 const invoiceItemSchema = z.object({
   item: z.string().min(1, "Item name is required"),
   qty: z.number().min(1, "Quantity must be at least 1"),
-  price: z.number().min(0.01, "Price must be greater than 0"),
+  price: z.number().min(0, "Price must be greater than or equal to 0"),
 });
 
 const invoiceSchema = z
@@ -35,7 +35,7 @@ const invoiceSchema = z
     {
       message: "Due date cannot be earlier than invoice date",
       path: ["dueDate"],
-    }
+    },
   );
 
 type InvoiceFormData = z.infer<typeof invoiceSchema>;
@@ -59,7 +59,14 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
     },
   });
 
-  const { register, control, handleSubmit, watch, formState: { errors }, setValue } = form;
+  const {
+    register,
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    setValue,
+  } = form;
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -69,11 +76,12 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
   const watchItems = watch("items");
 
   // Calculate total
-  const total = watchItems?.reduce((sum, item) => {
-    const qty = Number(item.qty) || 0;
-    const price = Number(item.price) || 0;
-    return sum + qty * price;
-  }, 0) ?? 0;
+  const total =
+    watchItems?.reduce((sum, item) => {
+      const qty = Number(item.qty) || 0;
+      const price = Number(item.price) || 0;
+      return sum + qty * price;
+    }, 0) ?? 0;
 
   const onSubmit = async (data: InvoiceFormData) => {
     try {
@@ -93,7 +101,9 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
       toast.success("Invoice created successfully!");
       onSuccess?.();
     } catch (error) {
-      const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || "Failed to create invoice";
+      const message =
+        (error as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Failed to create invoice";
       toast.error(message);
     }
   };
@@ -103,7 +113,9 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
       {/* Customer & Dates */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="customer">Customer <span className="text-red-500">*</span></Label>
+          <Label htmlFor="customer">
+            Customer <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="customer"
             placeholder="Customer name"
@@ -116,7 +128,9 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="date">Invoice Date <span className="text-red-500">*</span></Label>
+          <Label htmlFor="date">
+            Invoice Date <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="date"
             type="date"
@@ -129,7 +143,9 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="dueDate">Due Date <span className="text-red-500">*</span></Label>
+          <Label htmlFor="dueDate">
+            Due Date <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="dueDate"
             type="date"
@@ -155,7 +171,9 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
       {/* Items */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label>Items <span className="text-red-500">*</span></Label>
+          <Label>
+            Items <span className="text-red-500">*</span>
+          </Label>
           <Button
             type="button"
             variant="outline"
@@ -188,12 +206,17 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
             const rowTotal = qty * price;
 
             return (
-              <div key={field.id} className="grid grid-cols-12 gap-2 items-start">
+              <div
+                key={field.id}
+                className="grid grid-cols-12 gap-2 items-start"
+              >
                 <div className="col-span-5">
                   <Input
                     placeholder="Item name"
                     {...register(`items.${index}.item`)}
-                    className={errors.items?.[index]?.item ? "border-red-500" : ""}
+                    className={
+                      errors.items?.[index]?.item ? "border-red-500" : ""
+                    }
                   />
                   {errors.items?.[index]?.item && (
                     <p className="text-xs text-red-500 mt-1">
@@ -207,7 +230,9 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
                     min="1"
                     placeholder="Qty"
                     {...register(`items.${index}.qty`, { valueAsNumber: true })}
-                    className={errors.items?.[index]?.qty ? "border-red-500" : ""}
+                    className={
+                      errors.items?.[index]?.qty ? "border-red-500" : ""
+                    }
                   />
                   {errors.items?.[index]?.qty && (
                     <p className="text-xs text-red-500 mt-1">
@@ -218,11 +243,13 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
                 <div className="col-span-3">
                   <Input
                     type="number"
-                    min="0.01"
-                    step="0.01"
                     placeholder="Price"
-                    {...register(`items.${index}.price`, { valueAsNumber: true })}
-                    className={errors.items?.[index]?.price ? "border-red-500" : ""}
+                    {...register(`items.${index}.price`, {
+                      valueAsNumber: true,
+                    })}
+                    className={
+                      errors.items?.[index]?.price ? "border-red-500" : ""
+                    }
                   />
                   {errors.items?.[index]?.price && (
                     <p className="text-xs text-red-500 mt-1">
@@ -266,8 +293,14 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
             Cancel
           </Button>
         )}
-        <Button type="submit" disabled={createInvoice.isPending} className="bg-my-app-primary hover:bg-my-app-primary/90">
-          {createInvoice.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        <Button
+          type="submit"
+          disabled={createInvoice.isPending}
+          className="bg-my-app-primary hover:bg-my-app-primary/90"
+        >
+          {createInvoice.isPending && (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          )}
           Create Invoice
         </Button>
       </div>
