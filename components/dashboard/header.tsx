@@ -11,14 +11,14 @@ export default function Header() {
   const username = data?.user?.username || "User";
 
   return (
-    <header className="w-full bg-linear-to-r from-blue-600 via-purple-600 to-blue-700 shadow-lg sticky top-0 z-40 backdrop-blur-sm">
+    <header className="w-full bg-my-app-primary shadow-lg sticky top-0 z-40 backdrop-blur-sm">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-24">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-6">
             {/* Logo */}
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-md">
-                <LayoutDashboard className="h-6 w-6 text-blue-600" />
+                <LayoutDashboard className="h-6 w-6 text-my-app-primary" />
               </div>
               <span className="text-xl font-bold text-white tracking-tight">InvoiceApp</span>
             </div>

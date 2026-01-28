@@ -123,8 +123,8 @@ export function DataTable<T>({
 
   const getSortIcon = (key: string) => {
     if (sortKey !== key) return <ChevronsUpDown className="ml-2 h-4 w-4 text-gray-300 transition-colors" />
-    if (sortDirection === "asc") return <ChevronUp className="ml-2 h-4 w-4 text-blue-300" />
-    if (sortDirection === "desc") return <ChevronDown className="ml-2 h-4 w-4 text-blue-300" />
+    if (sortDirection === "asc") return <ChevronUp className="ml-2 h-4 w-4 text-my-app-primary" />
+    if (sortDirection === "desc") return <ChevronDown className="ml-2 h-4 w-4 text-my-app-primary" />
     return <ChevronsUpDown className="ml-2 h-4 w-4 text-gray-300" />
   }
 
@@ -139,7 +139,7 @@ export function DataTable<T>({
       {(title || description) && (
         <div className="flex flex-col space-y-2 mb-6">
           {title && (
-            <h2 className="text-2xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{title}</h2>
+            <h2 className="text-2xl font-bold text-my-app-primary">{title}</h2>
           )}
           {description && (
             <p className="text-gray-600 text-sm">{description}</p>
@@ -151,7 +151,7 @@ export function DataTable<T>({
       <div className="bg-white rounded-t-2xl shadow-xl border border-gray-200 overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-linear-to-r from-slate-700 to-slate-800 hover:from-slate-700 hover:to-slate-800 border-none!">
+            <TableRow className="bg-slate-800 hover:bg-slate-800 border-none!">
               {columns.map((col) => (
                 <TableHead
                   key={String(col.key)}
@@ -164,7 +164,7 @@ export function DataTable<T>({
                 >
                   {col.sortable ? (
                     <button
-                      className="flex items-center hover:text-blue-300 transition-colors font-semibold text-white"
+                      className="flex items-center hover:opacity-80 transition-colors font-semibold text-white"
                       onClick={() => handleSort(String(col.key))}
                     >
                       {col.header}
@@ -192,7 +192,7 @@ export function DataTable<T>({
                 >
                   <div className="flex flex-col items-center justify-center space-y-3">
                     <div className="relative">
-                      <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                      <div className="w-8 h-8 border-4 border-purple-200 border-t-my-app-primary rounded-full animate-spin"></div>
                     </div>
                     <p className="text-gray-500 font-medium">Loading data...</p>
                   </div>
@@ -223,7 +223,7 @@ export function DataTable<T>({
               paginatedData.map((row, rowIndex) => (
                 <TableRow
                   key={rowIndex}
-                  className="group transition-all duration-200 hover:bg-blue-50/50 border-b border-gray-100 last:border-0"
+                  className="group transition-all duration-200 hover:bg-purple-50/50 border-b border-gray-100 last:border-0"
                 >
                   {columns.map((col) => (
                     <TableCell
@@ -252,7 +252,7 @@ export function DataTable<T>({
                             className={cn(
                               "h-9 w-9 p-0 transition-all duration-200 hover:scale-110 rounded-lg shadow-sm",
                               action.variant === "destructive" && "hover:bg-red-50 hover:text-red-600 hover:border-red-200",
-                              action.variant === "ghost" && "hover:bg-blue-50 hover:text-blue-600"
+                              action.variant === "ghost" && "hover:bg-purple-50 text-my-app-primary"
                             )}
                           >
                             {action.icon || (

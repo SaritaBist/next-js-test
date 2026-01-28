@@ -62,16 +62,16 @@ export function Pagination({
   const pages = generatePageNumbers();
 
   return (
-    <div className="flex items-center justify-between bg-linear-to-r from-slate-50 via-white to-slate-50 border-x border-b border-slate-200 px-6 py-4 rounded-b-2xl shadow-sm">
+    <div className="flex items-center justify-between bg-slate-50 border-x border-b border-slate-200 px-6 py-4 rounded-b-2xl shadow-sm">
       {/* Results info */}
       <div className="flex items-center gap-2">
         <div className="text-sm font-medium text-gray-600">
           Showing{" "}
-          <span className="font-bold text-transparent bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text">
+          <span className="font-bold text-my-app-primary">
             {totalCount === 0 ? 0 : startRecord}-{endRecord}
           </span>{" "}
           of{" "}
-          <span className="font-bold text-transparent bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text">
+          <span className="font-bold text-my-app-primary">
             {totalCount}
           </span>
         </div>
@@ -83,7 +83,7 @@ export function Pagination({
           <div className="flex items-center gap-3">
             <span className="text-sm font-medium text-gray-600">Rows</span>
             <select
-              className="h-9 px-3 rounded-lg border-2 border-slate-200 bg-white text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all hover:border-slate-300 cursor-pointer"
+              className="h-9 px-3 rounded-lg border-2 border-slate-200 bg-white text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-my-app-primary focus:border-my-app-primary transition-all hover:border-slate-300 cursor-pointer"
               value={pageSize}
               onChange={(e) => onPageSizeChange(Number(e.target.value))}
             >
@@ -103,7 +103,7 @@ export function Pagination({
             size="sm"
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage <= 1}
-            className="h-9 w-9 p-0 rounded-lg transition-all hover:bg-linear-to-r hover:from-blue-50 hover:to-purple-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="h-9 w-9 p-0 rounded-lg transition-all hover:bg-purple-50 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="h-5 w-5 text-gray-600" />
           </Button>
@@ -126,8 +126,8 @@ export function Pagination({
                   className={cn(
                     "h-9 min-w-9 px-3 text-sm font-semibold rounded-lg transition-all",
                     currentPage === page
-                      ? "bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
-                      : "text-gray-600 hover:bg-linear-to-r hover:from-blue-50 hover:to-purple-50 hover:text-blue-600"
+                      ? "bg-my-app-primary hover:opacity-90 text-white shadow-lg hover:shadow-xl transform hover:scale-105"
+                      : "text-gray-600 hover:bg-purple-50"
                   )}
                   onClick={() => onPageChange(page as number)}
                 >
@@ -143,7 +143,7 @@ export function Pagination({
             size="sm"
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage >= totalPages}
-            className="h-9 w-9 p-0 rounded-lg transition-all hover:bg-linear-to-r hover:from-blue-50 hover:to-purple-50 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="h-9 w-9 p-0 rounded-lg transition-all hover:bg-purple-50 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <ChevronRight className="h-5 w-5 text-gray-600" />
           </Button>

@@ -46,19 +46,19 @@ const LoginForm: React.FC = () => {
   return (
     <div className="max-w-xl mx-auto mt-8 p-8 relative">
       {/* Animated background card */}
-      <div className="absolute inset-0 bg-linear-to-br from-blue-50 via-white to-purple-50 rounded-2xl shadow-2xl transform transition-all duration-300 hover:shadow-3xl" />
+      <div className="absolute inset-0 bg-purple-50 rounded-2xl shadow-2xl transform transition-all duration-300 hover:shadow-3xl" />
       
       <div className="relative">
         {/* Logo/Icon */}
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 bg-linear-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-105">
+          <div className="w-16 h-16 bg-my-app-primary rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-105">
             <Lock className="w-8 h-8 text-white" />
           </div>
         </div>
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-3xl font-bold text-my-app-primary mb-2">
             Welcome Back
           </h1>
           <p className="text-gray-600">Sign in to continue to your account</p>
@@ -79,7 +79,7 @@ const LoginForm: React.FC = () => {
                       <Input
                         type="text"
                         placeholder="Enter your username"
-                        className="pl-10 h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-all"
+                        className="pl-10 h-12 border-gray-300 focus:border-my-app-primary focus:ring-my-app-primary transition-all"
                         {...field}
                         disabled={signInMutation.isPending}
                       />
@@ -102,7 +102,7 @@ const LoginForm: React.FC = () => {
                       <Input
                         type="password"
                         placeholder="Enter your password"
-                        className="pl-10 h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-all"
+                        className="pl-10 h-12 border-gray-300 focus:border-my-app-primary focus:ring-my-app-primary transition-all"
                         {...field}
                         disabled={signInMutation.isPending}
                       />
@@ -115,7 +115,7 @@ const LoginForm: React.FC = () => {
 
             <Button 
               type="submit" 
-              className="w-full h-12 bg-linear-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" 
+              className="w-full h-12 bg-my-app-primary hover:bg-my-app-primary/90" 
               disabled={signInMutation.isPending}
             >
               {signInMutation.isPending ? (
@@ -135,7 +135,7 @@ const LoginForm: React.FC = () => {
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-600">
             Don't have an account?{" "}
-            <Link href="/sign-up" className="font-semibold text-blue-600 hover:text-purple-600 transition-colors">
+            <Link href="/sign-up" className="font-semibold text-my-app-primary hover:opacity-80 transition-colors">
               Create account
             </Link>
           </p>

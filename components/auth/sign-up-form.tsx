@@ -52,19 +52,19 @@ const SignUpForm: React.FC = () => {
   return (
     <div className="max-w-xl mx-auto mt-8 p-8 relative">
       {/* Animated background card */}
-      <div className="absolute inset-0 bg-linear-to-br from-purple-50 via-white to-blue-50 rounded-2xl shadow-2xl transform transition-all duration-300 hover:shadow-3xl" />
+      <div className="absolute inset-0 bg-purple-50 rounded-2xl shadow-2xl transform transition-all duration-300 hover:shadow-3xl" />
       
       <div className="relative">
         {/* Logo/Icon */}
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 bg-linear-to-br from-purple-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-105">
+          <div className="w-16 h-16 bg-my-app-primary rounded-2xl flex items-center justify-center shadow-lg transform transition-transform hover:scale-105">
             <User className="w-8 h-8 text-white" />
           </div>
         </div>
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-linear-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-3xl font-bold text-my-app-primary mb-2">
             Create Account
           </h1>
           <p className="text-gray-600">Join us today and get started</p>
@@ -84,7 +84,7 @@ const SignUpForm: React.FC = () => {
                       <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                       <Input
                         placeholder="Choose a username"
-                        className="pl-10 h-12 border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all"
+                        className="pl-10 h-12 border-gray-300 focus:border-my-app-primary focus:ring-my-app-primary transition-all"
                         {...field}
                         disabled={signUpMutation.isPending}
                       />
@@ -107,7 +107,7 @@ const SignUpForm: React.FC = () => {
                       <Input
                         type="password"
                         placeholder="Create a strong password"
-                        className="pl-10 h-12 border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all"
+                        className="pl-10 h-12 border-gray-300 focus:border-my-app-primary focus:ring-my-app-primary transition-all"
                         {...field}
                         disabled={signUpMutation.isPending}
                       />
@@ -130,7 +130,7 @@ const SignUpForm: React.FC = () => {
                       <Input
                         type="password"
                         placeholder="Confirm your password"
-                        className="pl-10 h-12 border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all"
+                        className="pl-10 h-12 border-gray-300 focus:border-my-app-primary focus:ring-my-app-primary transition-all"
                         {...field}
                         disabled={signUpMutation.isPending}
                       />
@@ -143,7 +143,7 @@ const SignUpForm: React.FC = () => {
 
             <Button 
               type="submit" 
-              className="w-full h-12 bg-linear-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" 
+              className="w-full h-12 bg-my-app-primary hover:bg-my-app-primary/90" 
               disabled={signUpMutation.isPending}
             >
               {signUpMutation.isPending ? (
@@ -163,7 +163,7 @@ const SignUpForm: React.FC = () => {
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-600">
             Already have an account?{" "}
-            <Link href="/sign-in" className="font-semibold text-purple-600 hover:text-blue-600 transition-colors">
+            <Link href="/sign-in" className="font-semibold text-my-app-primary hover:opacity-80 transition-colors">
               Sign in
             </Link>
           </p>
