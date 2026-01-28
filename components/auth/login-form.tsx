@@ -79,7 +79,7 @@ const LoginForm: React.FC = () => {
                       <Input
                         type="text"
                         placeholder="Enter your username"
-                        className="pl-10 h-12 border-gray-300 focus:border-my-app-primary focus:ring-my-app-primary transition-all"
+                        className="pl-10 h-12 border-gray-300 transition-all"
                         {...field}
                         disabled={signInMutation.isPending}
                       />
@@ -102,7 +102,7 @@ const LoginForm: React.FC = () => {
                       <Input
                         type="password"
                         placeholder="Enter your password"
-                        className="pl-10 h-12 border-gray-300 focus:border-my-app-primary focus:ring-my-app-primary transition-all"
+                        className="pl-10 h-12 border-gray-300 transition-all"
                         {...field}
                         disabled={signInMutation.isPending}
                       />

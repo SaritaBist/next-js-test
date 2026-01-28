@@ -84,7 +84,7 @@ const SignUpForm: React.FC = () => {
                       <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                       <Input
                         placeholder="Choose a username"
-                        className="pl-10 h-12 border-gray-300 focus:border-my-app-primary focus:ring-my-app-primary transition-all"
+                        className="pl-10 h-12 border-gray-300 transition-all"
                         {...field}
                         disabled={signUpMutation.isPending}
                       />
@@ -107,7 +107,7 @@ const SignUpForm: React.FC = () => {
                       <Input
                         type="password"
                         placeholder="Create a strong password"
-                        className="pl-10 h-12 border-gray-300 focus:border-my-app-primary focus:ring-my-app-primary transition-all"
+                        className="pl-10 h-12 border-gray-300 transition-all"
                         {...field}
                         disabled={signUpMutation.isPending}
                       />
@@ -130,7 +130,7 @@ const SignUpForm: React.FC = () => {
                       <Input
                         type="password"
                         placeholder="Confirm your password"
-                        className="pl-10 h-12 border-gray-300 focus:border-my-app-primary focus:ring-my-app-primary transition-all"
+                        className="pl-10 h-12 border-gray-300 transition-all"
                         {...field}
                         disabled={signUpMutation.isPending}
                       />

@@ -209,16 +209,26 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
                     {...register(`items.${index}.qty`, { valueAsNumber: true })}
                     className={errors.items?.[index]?.qty ? "border-red-500" : ""}
                   />
+                  {errors.items?.[index]?.qty && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {errors.items[index]?.qty?.message}
+                    </p>
+                  )}
                 </div>
                 <div className="col-span-3">
                   <Input
                     type="number"
-                    min="0"
+                    min="0.01"
                     step="0.01"
                     placeholder="Price"
                     {...register(`items.${index}.price`, { valueAsNumber: true })}
                     className={errors.items?.[index]?.price ? "border-red-500" : ""}
                   />
+                  {errors.items?.[index]?.price && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {errors.items[index]?.price?.message}
+                    </p>
+                  )}
                 </div>
                 <div className="col-span-1 flex items-center h-10 text-sm font-medium">
                   ${rowTotal.toFixed(2)}
@@ -256,7 +266,7 @@ export default function InvoiceForm({ onSuccess, onCancel }: InvoiceFormProps) {
             Cancel
           </Button>
         )}
-        <Button type="submit" disabled={createInvoice.isPending}>
+        <Button type="submit" disabled={createInvoice.isPending} className="bg-my-app-primary hover:bg-my-app-primary/90">
           {createInvoice.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Create Invoice
         </Button>
