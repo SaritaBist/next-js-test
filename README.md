@@ -1,12 +1,12 @@
 # Invoice & Inventory Management Application
 
-A modern, full-stack invoice management system built with Next.js 16, React 19, and TypeScript. This application provides a complete solution for managing invoices, tracking payments, and monitoring business statistics through an intuitive dashboard interface.
+A modern, full-stack invoice management system built with Next.js 16, React 19, and TypeScript. This application provides a complete solution for managing invoices, and monitoring business statistics through an intuitive dashboard interface.
 
 ## 🚀 Features
 
 - **User Authentication** - Secure JWT-based authentication with automatic token refresh
 - **Dashboard Analytics** - Real-time statistics showing total invoices, amounts, and status breakdowns
-- **Invoice Management** - Create, view, and manage invoices with multiple line items
+- **Invoice Management** - Create and view invoices with multiple line items
 - **Dynamic Forms** - Add/remove invoice items with automatic total calculation
 - **Status Tracking** - Monitor invoice status (Paid, Unpaid, Overdue) with color-coded badges
 - **Sortable Tables** - Interactive data tables with sorting and pagination
@@ -84,7 +84,7 @@ npm start
 ```
 my-app/
 ├── app/                          # Next.js App Router
-│   ├── globals.css              # Global styles and Tailwind imports
+│   ├── globals.css              # Global styles with custom my-app-primary color
 │   ├── layout.tsx               # Root layout with providers
 │   ├── page.tsx                 # Home page (redirects to sign-in)
 │   ├── (auth)/                  # Authentication route group
@@ -99,22 +99,29 @@ my-app/
 │   ├── auth/                    # Authentication components
 │   │   ├── login-form.tsx      # Login form with validation
 │   │   └── sign-up-form.tsx    # Registration form with validation
+│   ├── common/                  # Common reusable components
+│   │   ├── data-table.tsx      # Sortable table with internal sorting
+│   │   ├── pagination.tsx      # Table pagination component
+│   │   └── protected-route.tsx # Route protection wrapper
+│   ├── dashboard/               # Dashboard components
+│   │   ├── dashboard.tsx       # Main dashboard container
+│   │   └── header.tsx          # App header with user info
+│   ├── invoice/                 # Invoice management components
+│   │   ├── invoice-details-dialog.tsx  # Invoice details modal
+│   │   ├── invoice-form.tsx    # Create invoice form with validation
+│   │   ├── invoice-list.tsx    # Invoice table with actions
+│   │   ├── stat-card.tsx       # Individual statistic card
+│   │   └── stats-cards.tsx     # Dashboard statistics grid
 │   ├── providers/               # Context providers
 │   │   └── react-query-provider.tsx  # React Query setup
-│   ├── ui/                      # Reusable UI components (shadcn-style)
-│   │   ├── alert.tsx
-│   │   ├── button.tsx
-│   │   ├── form.tsx
-│   │   ├── input.tsx
-│   │   ├── label.tsx
-│   │   └── table.tsx
-│   ├── dashboard.tsx            # Main dashboard component
-│   ├── data-table.tsx          # Reusable sortable table
-│   ├── header.tsx              # App header with user info
-│   ├── invoice-form.tsx        # Create invoice modal form
-│   ├── invoice-list.tsx        # Invoice table with actions
-│   ├── stat-card.tsx           # Individual statistic card
-│   └── stats-cards.tsx         # Dashboard statistics grid
+│   └── ui/                      # Reusable UI components (shadcn-style)
+│       ├── alert.tsx
+│       ├── button.tsx          # Enhanced with primary color styles
+│       ├── dialog.tsx
+│       ├── form.tsx
+│       ├── input.tsx           # Enhanced with primary color focus states
+│       ├── label.tsx
+│       └── table.tsx
 │
 ├── hooks/                        # Custom React hooks
 │   ├── use-auth.ts              # Authentication logic
@@ -198,17 +205,18 @@ Displays real-time analytics:
 - **Description** - Optional invoice description
 - **Line Items** - Dynamic item rows with:
   - Item name (required)
-  - Quantity (min: 1)
-  - Price per unit
+  - Quantity (min: 1, with validation messages)
+  - Price per unit (min: 0.01, prevents negative values with validation messages)
   - Automatic total calculation
   - Add/remove items (minimum 1 item)
 - **Real-time Total** - Displays calculated total amount
 
 #### Invoice List
-- **Sortable Columns** - Click headers to sort data
+- **Auto-Sorting** - Click headers to sort data (DataTable handles sorting internally)
+- **Three-way sorting** - Ascending → Descending → No sort
 - **Status Badges** - Color-coded status indicators
 - **Action Buttons** - View invoice details
-- **Pagination** - Navigate through multiple pages
+- **Pagination** - Navigate through multiple pages with my-app-primary styling
 - **Empty State** - Helpful message when no invoices exist
 
 ## 🔄 API Integration
@@ -247,21 +255,30 @@ invoiceKeys: ['invoices', 'list']
 
 ## 🎨 UI Components
 
+### Custom Color Theme
+
+The application uses a custom primary color `rgb(139, 61, 255)`:
+- Defined as `--my-app-primary` in `globals.css`
+- Used via Tailwind classes: `bg-my-app-primary`, `text-my-app-primary`, `border-my-app-primary`
+- Replaces all gradient colors for consistency
+- Automatically applied to focus states in inputs and form fields
+
 ### Design System
 
 Built with **shadcn/ui** patterns:
 - Radix UI primitives for accessibility
-- Tailwind CSS for styling
-- Consistent color scheme (blue primary)
+- Tailwind CSS v4 for styling
+- Consistent purple theme (rgb(139, 61, 255))
 - Status-based colors (green/yellow/red)
 - Geist Sans & Geist Mono fonts
 
-### Reusable Components
+### Enhanced Components
 
-- **Button** - Multiple variants (default, destructive, outline, ghost)
-- **Input** - Text input with error states
+- **Button** - Multiple variants with shadow, transform, and hover effects built-in
+- **Input** - Automatic my-app-primary color on focus with slate-200 border
 - **Form** - React Hook Form integration with field-level errors
-- **Table** - Sortable data table with pagination
+- **DataTable** - Sortable table with internal sorting logic (no external state needed)
+- **Pagination** - Integrated pagination with my-app-primary styling
 - **Alert** - Notification component for displaying messages
 - **Label** - Form labels with accessibility support
 
@@ -280,6 +297,19 @@ npm run lint         # Run ESLint
 ```
 
 ## 🔍 Key Features & Patterns
+
+### Custom Theme System
+- **CSS Variables** - `--my-app-primary: rgb(139, 61, 255)` defined in globals.css
+- **Tailwind Integration** - `--color-my-app-primary: 139 61 255` for utility classes
+- **Consistent Styling** - All gradients replaced with single primary color
+- **Focus States** - Automatic primary color on input focus
+
+### DataTable Component
+- **Internal Sorting** - No need to manage sort state in parent components
+- **Type-safe** - Generic TypeScript support for any data type
+- **Auto-pagination** - Built-in pagination logic
+- **Flexible** - Supports both controlled and uncontrolled modes
+- **Sortable Columns** - Just mark columns with `sortable: true`
 
 ### Type Safety
 - Full TypeScript coverage
@@ -307,7 +337,7 @@ npm run lint         # Run ESLint
 ### Code Organization
 - Custom hooks for business logic
 - Repository pattern in API layer
-- Component composition
+- Component composition by feature (auth/, invoice/, dashboard/)
 - Route groups for layout sharing
 
 ## 🚧 Development Guidelines
@@ -345,7 +375,6 @@ export function Component() {
 
 ## 🐛 Troubleshooting
 
-### Common Issues
 
 **Port Already in Use**
 ```bash
@@ -368,18 +397,6 @@ npx kill-port 3000
 - Check token expiration times
 - Verify refresh token endpoint is working
 
-## 📝 License
 
-This project is part of BrahmaBytes lab test.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
 
 **Built with ❤️ using Next.js 16 and React 19**
